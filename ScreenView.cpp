@@ -97,6 +97,10 @@ void ScreenView_OnDraw(HDC hdc)
     RECT rc;  ::GetClientRect(g_hwndScreen, &rc);
     int x = (rc.right - m_cxScreenWidth) / 2;
 
+    HBITMAP hBmpPieces = ::LoadBitmap(g_hInst, MAKEINTRESOURCE(IDB_CHESS_PIECES));
+    HDC hdcMem = ::CreateCompatibleDC(hdc);
+    HGDIOBJ hOldBitmap = ::SelectObject(hdcMem, hBmpPieces);
+
     HBRUSH hbrWhite = ::CreateSolidBrush(COLOR_BOARD_WHITE);
     HBRUSH hbrBlack = ::CreateSolidBrush(COLOR_BOARD_BLACK);
     HFONT hfont = CreateDialogFont();
@@ -122,9 +126,13 @@ void ScreenView_OnDraw(HDC hdc)
                 rcText.right = rcText.left + 40;
                 rcText.bottom = rcText.top + 40;
 
-                TCHAR buffer[5];
-                PrintHexValue(buffer, figure);
-                ::DrawText(hdc, buffer + 2, 2, &rcText, DT_NOPREFIX | DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+                int figurex = (6 - ((figure & 0xf) >> 1)) * 40;
+                int figurey = (figure & 0x80) ? 0 : 40;
+                ::TransparentBlt(hdc, x + xx * 40, (7 - yy) * 40, 40, 40, hdcMem, figurex, figurey, 40, 40, RGB(128, 128, 128));
+
+                //TCHAR buffer[5];
+                //PrintHexValue(buffer, figure);
+                //::DrawText(hdc, buffer + 2, 2, &rcText, DT_NOPREFIX | DT_SINGLELINE | DT_LEFT | DT_BOTTOM);
             }
         }
     }
@@ -133,9 +141,12 @@ void ScreenView_OnDraw(HDC hdc)
     ::DeleteObject(hbrWhite);
     ::DeleteObject(hbrBlack);
 
+    ::SelectObject(hdcMem, hOldBitmap);
+    ::DeleteDC(hdcMem);
+    ::DeleteObject(hBmpPieces);
+
     // Empty border
     HBRUSH hBrush = ::CreateSolidBrush(COLOR_BK_BACKGROUND);
-    //HGDIOBJ hOldBrush = ::SelectObject(hdc, ::GetSysColorBrush(COLOR__BTNFACE));
     HGDIOBJ hOldBrush = ::SelectObject(hdc, hBrush);
     PatBlt(hdc, 0, 0, rc.right, 4, PATCOPY);
     PatBlt(hdc, 0, 0, x, rc.bottom, PATCOPY);
