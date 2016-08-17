@@ -171,7 +171,7 @@ void ScreenView_OnDraw(HDC hdc)
         for (int xx = 0; xx < 8; xx++)
         {
             // Board cell background
-            HBRUSH hbr = ((xx ^ yy) & 1) ? hbrBlack : hbrWhite;
+            HBRUSH hbr = ((xx ^ yy) & 1) ? hbrWhite : hbrBlack;
             HGDIOBJ hbrOld = ::SelectObject(hdc, hbr);
             PatBlt(hdc, x + xx * 40, boardy + (7 - yy) * 40, 40, 40, PATCOPY);
             ::SelectObject(hdc, hbrOld);
@@ -226,7 +226,7 @@ void ScreenView_OnDraw(HDC hdc)
     ::DeleteObject(hBmpPieces);
 }
 
-void ScreenView_RedrawScreen()
+void ScreenView_UpdateScreen()
 {
     bool okChanged = false;
     for (int index = 0; index < 64; index++)

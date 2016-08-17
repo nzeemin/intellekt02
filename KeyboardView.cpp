@@ -70,8 +70,8 @@ struct KeyboardIndicator
 }
 m_arrKeyboardIndicators[] =
 {
-    {   0, 24, 90, 12, _T("вы выиграли"),  false },
-    {   0, 56, 90, 12, _T("вы проиграли"), false },
+    {   0, 24, 90, 14, _T("вы выиграли"),  false },
+    {   0, 56, 90, 14, _T("вы проиграли"), false },
 };
 const int m_nKeyboardIndicatorsCount = sizeof(m_arrKeyboardIndicators) / sizeof(KeyboardIndicator);
 
@@ -220,12 +220,12 @@ void KeyboardView_SetIndicatorData(BYTE indicator, BYTE data)
     }
 
     bool okYouWin = (indicator & 0x10) != 0;
-    redraw |= (m_arrKeyboardIndicators[0].state != okYouWin);
-    m_arrKeyboardIndicators[0].state = okYouWin;
+    redraw |= (m_arrKeyboardIndicators[1].state != okYouWin);
+    m_arrKeyboardIndicators[1].state = okYouWin;
 
     bool okYouLost = (indicator & 0x20) != 0;
-    redraw |= (m_arrKeyboardIndicators[1].state != okYouLost);
-    m_arrKeyboardIndicators[1].state = okYouLost;
+    redraw |= (m_arrKeyboardIndicators[0].state != okYouLost);
+    m_arrKeyboardIndicators[0].state = okYouLost;
 
     if (redraw)
         InvalidateRect(g_hwndKeyboard, NULL, FALSE);

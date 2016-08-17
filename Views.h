@@ -23,7 +23,7 @@ extern HWND g_hwndScreen;  // Screen View window handle
 void ScreenView_RegisterClass();
 void ScreenView_Init();
 void ScreenView_Done();
-void ScreenView_RedrawScreen();  // Force to call PrepareScreen and to draw the image
+void ScreenView_UpdateScreen();  // Force to call PrepareScreen and to draw the image
 void CreateScreenView(HWND hwndParent, int x, int y, int cxWidth);
 LRESULT CALLBACK ScreenViewWndProc(HWND, UINT, WPARAM, LPARAM);
 

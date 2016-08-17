@@ -77,7 +77,7 @@ int APIENTRY _tWinMain(
             {
                 if (Emulator_SystemFrame())
                 {
-                    ScreenView_RedrawScreen();
+                    ScreenView_UpdateScreen();
                 }
                 ::Sleep(1);
             }

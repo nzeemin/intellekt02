@@ -128,7 +128,7 @@ void Emulator_EnableTrace(bool okEnable)
 */
 int Emulator_SystemFrame()
 {
-    for (int ticks = 0; ticks < 8000; ticks++)
+    for (int ticks = 0; ticks < 20000; ticks++)
     {
 #if !defined(PRODUCT)
         if (m_okEmulatorTrace)
