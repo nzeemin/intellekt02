@@ -85,7 +85,6 @@ LRESULT CALLBACK ScreenViewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
 
-            //ScreenView_PrepareScreen();  //DEBUG
             ScreenView_OnDraw(hdc);
 
             EndPaint(hWnd, &ps);
@@ -164,7 +163,9 @@ void ScreenView_OnDraw(HDC hdc)
     HFONT hfont = CreateDialogFont();
     HGDIOBJ hOldFont = ::SelectObject(hdc, hfont);
     ::SetBkMode(hdc, TRANSPARENT);
+    ::SetTextColor(hdc, COLOR_BOARD_TEXT);
     TCHAR buffer[5];
+    RECT rcText;
     for (int yy = 0; yy < 8; yy++)
     {
         for (int xx = 0; xx < 8; xx++)
@@ -179,12 +180,6 @@ void ScreenView_OnDraw(HDC hdc)
             int figure = m_arrScreen_BoardData[index];
             if (figure != 0)
             {
-                RECT rcText;
-                rcText.left = x + xx * 40;
-                rcText.top = boardy + (7 - yy) * 40;
-                rcText.right = rcText.left + 40;
-                rcText.bottom = rcText.top + 40;
-
                 int figurex = (6 - ((figure & 0xf) >> 1)) * 40;
                 int figurey = (figure & 0x80) ? 0 : 40;
                 ::TransparentBlt(hdc, x + xx * 40, boardy + (7 - yy) * 40, 40, 40, hdcMem, figurex, figurey, 40, 40, RGB(128, 128, 128));
@@ -194,19 +189,31 @@ void ScreenView_OnDraw(HDC hdc)
             }
         }
 
+        // Row numbers
         buffer[0] = _T('1') + yy;
         buffer[1] = 0;
-        ::SetTextColor(hdc, COLOR_BOARD_TEXT);
-        ::TextOut(hdc, x + 8 * 40 + 4, boardy + (7 - yy) * 40 + 20, buffer, 1);
-        ::TextOut(hdc, x - 12, boardy + (7 - yy) * 40 + 20, buffer, 1);
+        rcText.top = boardy + (7 - yy) * 40;
+        rcText.bottom = rcText.top + 40;
+        rcText.left = x + 8 * 40 + 4;
+        rcText.right = rcText.left + 40;
+        ::DrawText(hdc, buffer, 1, &rcText, DT_NOPREFIX | DT_SINGLELINE | DT_LEFT | DT_VCENTER);
+        rcText.right = x - 4;
+        rcText.left = rcText.right - 40;
+        ::DrawText(hdc, buffer, 1, &rcText, DT_NOPREFIX | DT_SINGLELINE | DT_RIGHT | DT_VCENTER);
     }
+    // Column letters
     for (int xx = 0; xx < 8; xx++)
     {
         buffer[0] = _T('a') + xx;
         buffer[1] = 0;
-        ::SetTextColor(hdc, COLOR_BOARD_TEXT);
-        ::TextOut(hdc, x + xx * 40 + 20, 2, buffer, 1);
-        ::TextOut(hdc, x + xx * 40 + 20, boardy + 8 * 40 + 2, buffer, 1);
+        rcText.left = x + xx * 40;
+        rcText.right = rcText.left + 40;
+        rcText.bottom = boardy - 4;
+        rcText.top = rcText.bottom - 40;
+        ::DrawText(hdc, buffer, 1, &rcText, DT_NOPREFIX | DT_SINGLELINE | DT_CENTER | DT_BOTTOM);
+        rcText.top = boardy + 8 * 40 + 4;
+        rcText.bottom = rcText.top + 40;
+        ::DrawText(hdc, buffer, 1, &rcText, DT_NOPREFIX | DT_SINGLELINE | DT_CENTER | DT_TOP);
     }
 
     ::SelectObject(hdc, hOldFont);

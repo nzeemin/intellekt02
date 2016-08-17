@@ -70,8 +70,8 @@ struct KeyboardIndicator
 }
 m_arrKeyboardIndicators[] =
 {
-    {   0, 30, 90, 12, _T("вы выиграли"),  false },
-    {   0, 60, 90, 12, _T("вы проиграли"), false },
+    {   0, 24, 90, 12, _T("вы выиграли"),  false },
+    {   0, 56, 90, 12, _T("вы проиграли"), false },
 };
 const int m_nKeyboardIndicatorsCount = sizeof(m_arrKeyboardIndicators) / sizeof(KeyboardIndicator);
 
@@ -309,6 +309,7 @@ void KeyboardView_OnDraw(HDC hdc)
     }
 
     // Draw indicators
+    HGDIOBJ hpenOld = ::SelectObject(hdc, hpenDark);
     for (int i = 0; i < m_nKeyboardIndicatorsCount; i++)
     {
         RECT rcText;
@@ -324,24 +325,20 @@ void KeyboardView_OnDraw(HDC hdc)
 
         HBRUSH hbr = m_arrKeyboardIndicators[i].state ? hbrRed : hbrDark;
         HGDIOBJ hOldBrush = ::SelectObject(hdc, hbr);
-        ::PatBlt(hdc, rcRadio.left, rcRadio.top, rcRadio.right - rcRadio.left, rcRadio.bottom - rcRadio.top, PATCOPY);
+        ::Ellipse(hdc, rcRadio.left, rcRadio.top, rcRadio.right, rcRadio.bottom);
         ::SelectObject(hdc, hOldBrush);
 
-        ::DrawEdge(hdc, &rcRadio, BDR_SUNKENOUTER, BF_RECT);
-
         ::SetTextColor(hdc, COLOR_KEYBOARD_LITE);
-        //::TextOut(hdc, rcRadio.right + 2, rcRadio.top, m_arrKeyboardIndicators[i].text, wcslen(m_arrKeyboardIndicators[i].text));
         ::DrawText(hdc, m_arrKeyboardIndicators[i].text, wcslen(m_arrKeyboardIndicators[i].text), &rcText, DT_NOPREFIX | DT_SINGLELINE | DT_LEFT | DT_VCENTER);
     }
 
     // Draw segment indicators
-    HGDIOBJ hpenOld = ::SelectObject(hdc, hpenDark);
     for (int ind = 0; ind < 4; ind++)
     {
         BYTE data = m_arrKeyboardSegmentsData[ind];
         int segmentsx = m_nKeyboardBitmapLeft + 120 + ind * 46;
         if (ind >= 2) segmentsx += 15;
-        int segmentsy = m_nKeyboardBitmapTop + 30;
+        int segmentsy = m_nKeyboardBitmapTop + 25;
         for (int i = 0; i < m_nKeyboardSegmentsCount; i++)
         {
             HBRUSH hbr = (data & (1 << i)) ? hbrGreen : hBkBrush;
