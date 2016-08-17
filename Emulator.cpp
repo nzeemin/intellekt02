@@ -214,7 +214,7 @@ void i8080_hal_io_output(int port, int value)
     case 0xf6:
         {
             if (value != 0)
-                KeyboardView_SetSegmentIndicator(value & 0x0f, g_wEmulatorPortF5);
+                KeyboardView_SetIndicatorData(value, g_wEmulatorPortF5);
             break;
         }
     case 0xf5:

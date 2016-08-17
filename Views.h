@@ -38,7 +38,7 @@ void KeyboardView_Init();
 void KeyboardView_Done();
 void CreateKeyboardView(HWND hwndParent, int x, int y, int width, int height);
 LRESULT CALLBACK KeyboardViewWndProc(HWND, UINT, WPARAM, LPARAM);
-void KeyboardView_SetSegmentIndicator(int indicator, BYTE data);
+void KeyboardView_SetIndicatorData(BYTE indicator, BYTE data);
 
 
 //////////////////////////////////////////////////////////////////////

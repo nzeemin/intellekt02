@@ -12,9 +12,8 @@
 #define COLOR_BK_BACKGROUND   RGB(115,115,115)
 #define COLOR_KEYBOARD_LITE   RGB(228,228,228)
 #define COLOR_KEYBOARD_DARK   RGB(80,80,80)
-#define COLOR_KEYBOARD_RED    RGB(200,80,80)
+#define COLOR_KEYBOARD_RED    RGB(255,80,80)
 #define COLOR_KEYBOARD_GREEN  RGB(80,255,80)
-
 
 #define KEYSCAN_NONE 255
 #define KEYSCAN_RESET  1
@@ -67,12 +66,12 @@ struct KeyboardIndicator
 {
     int x, y, w, h;
     LPCTSTR text;
-    BOOL state;
+    bool state;
 }
 m_arrKeyboardIndicators[] =
 {
-    {   0, 30, 90, 12, _T("вы выиграли"),  FALSE },
-    {   0, 60, 90, 12, _T("вы проиграли"), FALSE },
+    {   0, 30, 90, 12, _T("вы выиграли"),  false },
+    {   0, 60, 90, 12, _T("вы проиграли"), false },
 };
 const int m_nKeyboardIndicatorsCount = sizeof(m_arrKeyboardIndicators) / sizeof(KeyboardIndicator);
 
@@ -196,7 +195,7 @@ LRESULT CALLBACK KeyboardViewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
     return (LRESULT)FALSE;
 }
 
-void KeyboardView_SetSegmentIndicator(int indicator, BYTE data)
+void KeyboardView_SetIndicatorData(BYTE indicator, BYTE data)
 {
     bool redraw = false;
     if (indicator & 1)
@@ -219,6 +218,14 @@ void KeyboardView_SetSegmentIndicator(int indicator, BYTE data)
         redraw |= (m_arrKeyboardSegmentsData[3] != data);
         m_arrKeyboardSegmentsData[3] = data;
     }
+
+    bool okYouWin = (indicator & 0x10) != 0;
+    redraw |= (m_arrKeyboardIndicators[0].state != okYouWin);
+    m_arrKeyboardIndicators[0].state = okYouWin;
+
+    bool okYouLost = (indicator & 0x20) != 0;
+    redraw |= (m_arrKeyboardIndicators[1].state != okYouLost);
+    m_arrKeyboardIndicators[1].state = okYouLost;
 
     if (redraw)
         InvalidateRect(g_hwndKeyboard, NULL, FALSE);
