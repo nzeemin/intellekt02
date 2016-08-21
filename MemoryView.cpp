@@ -5,6 +5,7 @@
 #include "Main.h"
 #include "Views.h"
 #include "ToolWindow.h"
+#include "Emulator.h"
 
 
 //////////////////////////////////////////////////////////////////////
@@ -118,7 +119,7 @@ LRESULT CALLBACK MemoryViewViewerWndProc(HWND hWnd, UINT message, WPARAM wParam,
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
 
-            //MemoryView_OnDraw(hdc);  // Draw memory dump
+            MemoryView_OnDraw(hdc);  // Draw memory dump
 
             EndPaint(hWnd, &ps);
         }
@@ -145,7 +146,6 @@ LRESULT CALLBACK MemoryViewViewerWndProc(HWND hWnd, UINT message, WPARAM wParam,
 
 void MemoryView_OnDraw(HDC hdc)
 {
-
     // Create and select font
     HFONT hFont = CreateMonospacedFont();
     HGDIOBJ hOldFont = SelectObject(hdc, hFont);
@@ -154,6 +154,37 @@ void MemoryView_OnDraw(HDC hdc)
     COLORREF colorOld = SetTextColor(hdc, colorText);
     COLORREF colorBkOld = SetBkColor(hdc, GetSysColor(COLOR_WINDOW));
 
+    TCHAR buffer[64];
+    const TCHAR* ADDRESS_LINE = _T("addr   0     2     4     6     8     a     c     e");
+    TextOut(hdc, cxChar * 5, 0, ADDRESS_LINE, (int) _tcslen(ADDRESS_LINE));
+
+    RECT rcClip;
+    GetClipBox(hdc, &rcClip);
+    RECT rcClient;
+    GetClientRect(m_hwndMemoryViewer, &rcClient);
+    m_nPageSize = rcClient.bottom / cyLine - 1;
+
+    WORD address = m_wBaseAddress;
+    int y = 1 * cyLine;
+    for (;;)    // Draw lines
+    {
+        PrintHexValue(buffer, address);
+        buffer[4] = _T(' ');
+
+        for (int j = 0; j < 16; j++)  // Draw bytes as hex values
+        {
+            buffer[5 + 3 * j] = _T(' ');
+            BYTE byte = Emulator_GetMemoryByte(address);
+            PrintHexByteValue(buffer + 6 + 3 * j, byte);
+
+            address++;
+        }
+
+        TextOut(hdc, cxChar * 5, y, buffer, _tcslen(buffer));
+        ::SetTextColor(hdc, colorText);
+        y += cyLine;
+        if (y > rcClip.bottom) break;
+    }
 }
 
 void MemoryView_UpdateWindowText()

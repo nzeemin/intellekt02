@@ -24,6 +24,7 @@ WNDPROC m_wndprocConsoleEdit = NULL;  // Old window proc address of the console 
 void ClearConsole();
 void PrintConsolePrompt();
 void SaveMemoryDump();
+void PrintMemoryDump(WORD address, int lines);
 void DoConsoleCommand();
 void ConsoleView_AdjustWindowLayout();
 LRESULT CALLBACK ConsoleEditWndProc(HWND, UINT, WPARAM, LPARAM);
@@ -221,6 +222,30 @@ void SaveMemoryDump()
     WriteFile(file, pMemory, dwLength, &dwBytesWritten, NULL);
     CloseHandle(file);
 }
+
+// Print memory dump
+void PrintMemoryDump(WORD address, int lines)
+{
+    TCHAR buffer[64];
+    for (int line = 0; line < lines; line++)
+    {
+        PrintHexValue(buffer, address);
+        buffer[4] = _T(' ');
+
+        for (int j = 0; j < 16; j++)  // Draw bytes as hex values
+        {
+            buffer[5 + 3 * j] = _T(' ');
+            BYTE byte = Emulator_GetMemoryByte(address);
+            PrintHexByteValue(buffer + 6 + 3 * j, byte);
+
+            address++;
+        }
+
+        buffer[5 + 3 * 16] = _T('\n');
+        buffer[5 + 3 * 16 + 1] = 0;
+        ConsoleView_Print(buffer);
+    }
+}
 // Print disassembled instructions
 // Return value: number of words in the last instruction
 int PrintDisassemble(WORD address, BOOL okOneInstr)
@@ -280,8 +305,9 @@ void ConsoleView_ShowHelp()
             _T("  c          Clear console log\r\n")
             _T("  d          Disassemble\r\n")
             _T("  g          Go; free run\r\n")
-            _T("  u          Save memory dump to file memdump.bin\r\n"));
-}
+            _T("  m          Memory dump at current address\r\n")
+            _T("  s          Step Into; executes one instruction\r\n")
+            _T("  u          Save memory dump to file memdump.bin\r\n"));}
 
 void DoConsoleCommand()
 {
@@ -324,12 +350,30 @@ void DoConsoleCommand()
         {
             if (command[1] == 0)  // "d" - disassemble at current address
                 PrintDisassemble(Emulator_GetPC(), FALSE);
+            else if (command[1] >= _T('0') && command[1] <= _T('7') || command[1] >= _T('a') && command[1] <= _T('f'))  // "dXXXX" - disassemble at address XXXX
+            {
+                WORD value;
+                if (! ParseHexValue(command + 1, &value))
+                    ConsoleView_Print(MESSAGE_WRONG_VALUE);
+                else
+                {
+                    PrintDisassemble(value, FALSE);
+                }
+            }
             else
                 ConsoleView_Print(MESSAGE_UNKNOWN_COMMAND);
         }
         break;
     case _T('u'):
         SaveMemoryDump();
+        break;
+    case _T('m'):
+        if (command[1] == 0)  // "m" - dump memory at current address
+        {
+            PrintMemoryDump(Emulator_GetPC(), 8);
+        }
+        else
+            ConsoleView_Print(MESSAGE_UNKNOWN_COMMAND);
         break;
     case _T('g'):
         if (command[1] == 0)

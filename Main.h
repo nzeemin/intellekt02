@@ -70,10 +70,12 @@ void DebugLogFormat(LPCTSTR pszFormat, ...);
 HFONT CreateMonospacedFont();
 HFONT CreateDialogFont();
 void GetFontWidthAndHeight(HDC hdc, int* pWidth, int* pHeight);
+void PrintHexByteValue(TCHAR* buffer, BYTE value);
 void PrintHexValue(TCHAR* buffer, WORD value);
 void PrintBinaryValue(TCHAR* buffer, WORD value);
 void DrawHexValue(HDC hdc, int x, int y, WORD value);
 void DrawBinaryValue(HDC hdc, int x, int y, WORD value);
+bool ParseHexValue(LPCTSTR text, WORD* pValue);
 
 
 //////////////////////////////////////////////////////////////////////

@@ -148,7 +148,6 @@
     <ResourceCompile Include="res\Intellekt02.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="ChessPieces40.bmp" />
     <Image Include="res\ChessPieces40.bmp" />
     <Image Include="res\Intellekt02.ico" />
     <Image Include="res\small.ico" />

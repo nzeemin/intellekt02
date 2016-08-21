@@ -355,6 +355,19 @@ void GetFontWidthAndHeight(HDC hdc, int* pWidth, int* pHeight)
         *pHeight = tm.tmHeight;
 }
 
+// Print hex 8-bit value to buffer
+// buffer size at least 3 characters
+void PrintHexByteValue(TCHAR* buffer, BYTE value)
+{
+    for (int p = 0; p < 2; p++)
+    {
+        int digit = value & 15;
+        buffer[1 - p] = (digit < 10) ? _T('0') + (TCHAR)digit : _T('a') + (TCHAR)(digit - 10);
+        value = (value >> 4);
+    }
+    buffer[2] = 0;
+}
+
 // Print hex 16-bit value to buffer
 // buffer size at least 5 characters
 void PrintHexValue(TCHAR* buffer, WORD value)
@@ -392,5 +405,39 @@ void DrawBinaryValue(HDC hdc, int x, int y, WORD value)
     TextOut(hdc, x, y, buffer, 16);
 }
 
+// Parse hex value from text
+bool ParseHexValue(LPCTSTR text, WORD* pValue)
+{
+    WORD value = 0;
+    TCHAR* pChar = (TCHAR*)text;
+    for (int p = 0;; p++)
+    {
+        if (p > 4) return false;
+        TCHAR ch = *pChar;  pChar++;
+        if (ch == 0) break;
+        if (ch >= _T('0') && ch <= _T('9'))
+        {
+            value = (value << 4);
+            TCHAR digit = ch - _T('0');
+            value = value + digit;
+        }
+        else if (ch >= _T('a') && ch <= _T('f'))
+        {
+            value = (value << 4);
+            TCHAR digit = ch - _T('a') + 10;
+            value = value + digit;
+        }
+        else if (ch >= _T('A') && ch <= _T('F'))
+        {
+            value = (value << 4);
+            TCHAR digit = ch - _T('A') + 10;
+            value = value + digit;
+        }
+        else
+            return false;
+    }
+    *pValue = value;
+    return true;
+}
 
 //////////////////////////////////////////////////////////////////////
