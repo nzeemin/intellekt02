@@ -23,6 +23,8 @@ BYTE g_wEmulatorPortF5 = 0;
 bool m_okEmulatorTrace = false;
 bool m_okEmulatorSound = false;
 
+int m_nEmulatorCpuTicks = 0;    // CPU ticks remaining
+
 WORD g_wEmulatorCpuPC = 0;      // Current PC value
 WORD g_wEmulatorPrevCpuPC = 0;  // Previous PC value
 
@@ -125,16 +127,24 @@ void Emulator_EnableTrace(bool okEnable)
 
 /*
 Каждый фрейм равен 1/25 секунды = 40 мс
+CPU at 2 MHz: 2000000 / 25 = 80000 ticks per frame
 */
 int Emulator_SystemFrame()
 {
-    for (int ticks = 0; ticks < 20000; ticks++)
+    for (int ticks = 0; ticks < 80000; ticks++)
     {
+        if (m_nEmulatorCpuTicks > 0)
+            m_nEmulatorCpuTicks--;
+        else
+        {
 #if !defined(PRODUCT)
-        if (m_okEmulatorTrace)
-            Emulator_TraceInstruction(i8080_pc());
+            if (m_okEmulatorTrace)
+                Emulator_TraceInstruction(i8080_pc());
 #endif
-        i8080_instruction();
+            m_nEmulatorCpuTicks = i8080_instruction();
+            if (m_nEmulatorCpuTicks < 0)
+                m_nEmulatorCpuTicks = 0;
+        }
     }
 
     return 1;

@@ -349,7 +349,7 @@ void MainWindow_AdjustWindowLayout()
     if (Settings_GetDebug())  // Debug views shown -- keyboard/tape snapped to top
     {
         cxScreen = 660;
-        cyScreen = 324;
+        cyScreen = 360;
 
         int yKeyboard = yScreen + cyScreen;
         int yConsole = yKeyboard;

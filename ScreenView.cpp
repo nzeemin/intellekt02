@@ -141,15 +141,15 @@ BOOL ScreenView_OnKeyEvent(WPARAM vkey, BOOL okExtKey, BOOL okPressed)
 void ScreenView_OnDraw(HDC hdc)
 {
     RECT rc;  ::GetClientRect(g_hwndScreen, &rc);
-    int x = (rc.right - m_cxScreenWidth) / 2;
+    int boardx = (rc.right - m_cxScreenWidth) / 2;
     int boardy = 20;
 
     // Empty border
     HBRUSH hBrush = ::CreateSolidBrush(COLOR_BK_BACKGROUND);
     HGDIOBJ hOldBrush = ::SelectObject(hdc, hBrush);
     PatBlt(hdc, 0, 0, rc.right, boardy, PATCOPY);
-    PatBlt(hdc, 0, 0, x, rc.bottom, PATCOPY);
-    PatBlt(hdc, x + m_cxScreenWidth, 0, rc.right - x - m_cxScreenWidth, rc.bottom, PATCOPY);
+    PatBlt(hdc, 0, 0, boardx, rc.bottom, PATCOPY);
+    PatBlt(hdc, boardx + m_cxScreenWidth, 0, rc.right - boardx - m_cxScreenWidth, rc.bottom, PATCOPY);
     PatBlt(hdc, 0, boardy + 8 * 40, rc.right, rc.bottom - boardy + 8 * 40, PATCOPY);
     ::SelectObject(hdc, hOldBrush);
     ::DeleteObject(hBrush);
@@ -168,12 +168,16 @@ void ScreenView_OnDraw(HDC hdc)
     RECT rcText;
     for (int yy = 0; yy < 8; yy++)
     {
+        int celly = boardy + (7 - yy) * 40;
+
         for (int xx = 0; xx < 8; xx++)
         {
+            int cellx = boardx + xx * 40;
+
             // Board cell background
             HBRUSH hbr = ((xx ^ yy) & 1) ? hbrWhite : hbrBlack;
             HGDIOBJ hbrOld = ::SelectObject(hdc, hbr);
-            PatBlt(hdc, x + xx * 40, boardy + (7 - yy) * 40, 40, 40, PATCOPY);
+            PatBlt(hdc, cellx, celly, 40, 40, PATCOPY);
             ::SelectObject(hdc, hbrOld);
 
             int index = yy * 8 + xx;
@@ -182,7 +186,7 @@ void ScreenView_OnDraw(HDC hdc)
             {
                 int figurex = (6 - ((figure & 0xf) >> 1)) * 40;
                 int figurey = (figure & 0x80) ? 0 : 40;
-                ::TransparentBlt(hdc, x + xx * 40, boardy + (7 - yy) * 40, 40, 40, hdcMem, figurex, figurey, 40, 40, RGB(128, 128, 128));
+                ::TransparentBlt(hdc, cellx, celly, 40, 40, hdcMem, figurex, figurey, 40, 40, RGB(128, 128, 128));
 
                 //PrintHexValue(buffer, figure);
                 //::DrawText(hdc, buffer + 2, 2, &rcText, DT_NOPREFIX | DT_SINGLELINE | DT_LEFT | DT_BOTTOM);
@@ -194,10 +198,10 @@ void ScreenView_OnDraw(HDC hdc)
         buffer[1] = 0;
         rcText.top = boardy + (7 - yy) * 40;
         rcText.bottom = rcText.top + 40;
-        rcText.left = x + 8 * 40 + 4;
+        rcText.left = boardx + 8 * 40 + 4;
         rcText.right = rcText.left + 40;
         ::DrawText(hdc, buffer, 1, &rcText, DT_NOPREFIX | DT_SINGLELINE | DT_LEFT | DT_VCENTER);
-        rcText.right = x - 4;
+        rcText.right = boardx - 4;
         rcText.left = rcText.right - 40;
         ::DrawText(hdc, buffer, 1, &rcText, DT_NOPREFIX | DT_SINGLELINE | DT_RIGHT | DT_VCENTER);
     }
@@ -206,7 +210,7 @@ void ScreenView_OnDraw(HDC hdc)
     {
         buffer[0] = _T('a') + xx;
         buffer[1] = 0;
-        rcText.left = x + xx * 40;
+        rcText.left = boardx + xx * 40;
         rcText.right = rcText.left + 40;
         rcText.bottom = boardy - 4;
         rcText.top = rcText.bottom - 40;

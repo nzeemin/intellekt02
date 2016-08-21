@@ -307,7 +307,8 @@ void ConsoleView_ShowHelp()
             _T("  g          Go; free run\r\n")
             _T("  m          Memory dump at current address\r\n")
             _T("  s          Step Into; executes one instruction\r\n")
-            _T("  u          Save memory dump to file memdump.bin\r\n"));}
+            _T("  u          Save memory dump to file memdump.bin\r\n"));
+}
 
 void DoConsoleCommand()
 {
