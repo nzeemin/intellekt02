@@ -139,11 +139,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     InitCommonControlsEx(&ics);
 
 #if !defined(PRODUCT)
-    //DebugLogClear();
+    DebugLogClear();
 #endif
     Settings_Init();
     if (!Emulator_Init())
         return FALSE;
+
+    Emulator_SetSound(Settings_GetSound() != FALSE);
 
     if (!CreateMainWindow())
         return FALSE;
@@ -154,9 +156,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 // Instance finalization
 void DoneInstance()
 {
-    //ScreenView_Done();
+    ScreenView_Done();
 
-    //Emulator_Done();
+    Emulator_Done();
 
     Settings_Done();
 }

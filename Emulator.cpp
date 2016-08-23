@@ -7,6 +7,7 @@
 #include "Views.h"
 #include "i8080.h"
 #include "i8080dis.h"
+#include "SoundGen.h"
 
 void Emulator_TraceInstruction(WORD address);
 
@@ -19,6 +20,7 @@ bool g_okEmulatorRunning = false;
 BYTE* g_pEmulatorRam = NULL;
 BYTE g_wEmulatorPortF4 = 255;
 BYTE g_wEmulatorPortF5 = 0;
+BYTE g_wEmulatorPortF6 = 0;
 
 bool m_okEmulatorTrace = false;
 bool m_okEmulatorSound = false;
@@ -49,6 +51,11 @@ bool Emulator_Init()
     i8080_init();
     i8080_jump(0);
 
+    if (m_okEmulatorSound)
+    {
+        SoundGen_Initialize(Settings_GetSoundVolume());
+    }
+
     return true;
 }
 
@@ -56,7 +63,6 @@ void Emulator_Done()
 {
     ::free(g_pEmulatorRam);  g_pEmulatorRam = NULL;
 }
-
 
 void Emulator_Start()
 {
@@ -111,6 +117,18 @@ bool Emulator_IsBreakpoint()
 
 void Emulator_SetSound(bool soundOnOff)
 {
+    if (m_okEmulatorSound != soundOnOff)
+    {
+        if (soundOnOff)
+        {
+            SoundGen_Initialize(Settings_GetSoundVolume());
+        }
+        else
+        {
+            SoundGen_Finalize();
+        }
+    }
+
     m_okEmulatorSound = soundOnOff;
 }
 
@@ -131,19 +149,34 @@ CPU at 2 MHz: 2000000 / 25 = 80000 ticks per frame
 */
 int Emulator_SystemFrame()
 {
-    for (int ticks = 0; ticks < 80000; ticks++)
+    const int audioticks = 20286 / (SOUNDSAMPLERATE / 25);
+    const int frameProcTicks = 4;
+
+    for (int frameticks = 0; frameticks < 20000; frameticks++)
     {
-        if (m_nEmulatorCpuTicks > 0)
-            m_nEmulatorCpuTicks--;
-        else
+        for (int procticks = 0; procticks < frameProcTicks; procticks++)  // CPU ticks
         {
+            if (m_nEmulatorCpuTicks > 0)
+                m_nEmulatorCpuTicks--;
+            else
+            {
 #if !defined(PRODUCT)
-            if (m_okEmulatorTrace)
-                Emulator_TraceInstruction(i8080_pc());
+                if (m_okEmulatorTrace)
+                    Emulator_TraceInstruction(i8080_pc());
 #endif
-            m_nEmulatorCpuTicks = i8080_instruction();
-            if (m_nEmulatorCpuTicks < 0)
-                m_nEmulatorCpuTicks = 0;
+                m_nEmulatorCpuTicks = i8080_instruction();
+                if (m_nEmulatorCpuTicks < 0)
+                    m_nEmulatorCpuTicks = 0;
+            }
+        }
+
+        if (frameticks % audioticks == 0 && m_okEmulatorSound)  // AUDIO tick
+        {
+            bool bSoundBit = (g_wEmulatorPortF6 & 0x80) != 0;
+            if (bSoundBit)
+                SoundGen_FeedDAC(0x1fff, 0x1fff);
+            else
+                SoundGen_FeedDAC(0x0000, 0x0000);
         }
     }
 
@@ -223,6 +256,7 @@ void i8080_hal_io_output(int port, int value)
     {
     case 0xf6:
         {
+            g_wEmulatorPortF6 = value;
             if (value != 0)
                 KeyboardView_SetIndicatorData(value, g_wEmulatorPortF5);
             break;

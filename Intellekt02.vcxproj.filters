@@ -45,6 +45,9 @@
     <ClInclude Include="i8080dis.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SoundGen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -87,6 +90,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="KeyboardView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundGen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

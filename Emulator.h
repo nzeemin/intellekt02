@@ -22,6 +22,7 @@ void Emulator_Done();
 WORD Emulator_GetPC();
 BYTE Emulator_GetMemoryByte(WORD address);
 bool Emulator_IsBreakpoint();
+void Emulator_SetSound(bool soundOnOff);
 void Emulator_Start();
 void Emulator_Stop();
 void Emulator_Reset();
