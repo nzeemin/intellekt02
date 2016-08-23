@@ -2,7 +2,10 @@
 
 ![](screenshot/Intellekt-02_running.png)
 
-#### Links
+"ИНТЕЛЛЕКТ-02" is a small Soviet computer with chessboard-like case and games on cartridges.
+Currently there's just one ROM image restored -- for the Chess game.
+
+## Links
 
  - [Intellect 02 - Soviet Digital Electronics Museum](http://www.leningrad.su/museum/show_calc.php?n=328) 
  - [i8080-core](https://github.com/begoon/i8080-core) -- the core used to emulate КР580ВМ80А microprocessor
