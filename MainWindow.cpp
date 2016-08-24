@@ -506,7 +506,9 @@ bool MainWindow_DoCommand(int commandId)
     switch (commandId)
     {
     case IDM_ABOUT:
-        //ShowAboutBox();
+        ::MessageBox(g_hwnd,
+                _T("INTELLEKT-02\n\nEmulator of soviet chess computer\nby Nikita Zimin, 2016\n\nhttps://github.com/nzeemin/intellekt02"),
+                g_szTitle, MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
         break;
     case IDM_EXIT:
         DestroyWindow(g_hwnd);
