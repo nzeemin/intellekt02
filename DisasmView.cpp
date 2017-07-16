@@ -17,6 +17,7 @@
 #define COLOR_BLUE      RGB(0,0,255)
 #define COLOR_SUBTITLE  RGB(0,128,0)
 #define COLOR_VALUE     RGB(128,128,128)
+#define COLOR_VALUEROM  RGB(128,128,192)
 #define COLOR_JUMP      RGB(80,192,224)
 #define COLOR_CURRENT   RGB(255,255,224)
 
@@ -60,7 +61,7 @@ void DisasmView_RegisterClass()
     RegisterClassEx(&wcex);
 }
 
-void CreateDisasmView(HWND hwndParent, int x, int y, int width, int height)
+void DisasmView_Create(HWND hwndParent, int x, int y, int width, int height)
 {
     ASSERT(hwndParent != NULL);
 
@@ -145,6 +146,17 @@ LRESULT CALLBACK DisasmViewViewerWndProc(HWND hWnd, UINT message, WPARAM wParam,
 
 BOOL DisasmView_OnKeyDown(WPARAM vkey, LPARAM /*lParam*/)
 {
+    switch (vkey)
+    {
+        //case 0x53:  // S - Load/Unload Subtitles
+        //    DisasmView_DoSubtitles();
+        //    break;
+    case VK_ESCAPE:
+        ConsoleView_Activate();
+        break;
+    default:
+        return TRUE;
+    }
     return FALSE;
 }
 
@@ -198,7 +210,7 @@ void DisasmView_DoDraw(HDC hdc)
         GetClientRect(m_hwndDisasmViewer, &rcFocus);
         if (yFocus >= 0)
         {
-            rcFocus.top = yFocus;
+            rcFocus.top = yFocus - 1;
             rcFocus.bottom = yFocus + cyLine;
         }
         DrawFocusRect(hdc, &rcFocus);

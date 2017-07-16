@@ -7,6 +7,8 @@
 #include "Views.h"
 #include "ToolWindow.h"
 #include "i8080.h"
+#include "Emulator.h"
+
 
 //////////////////////////////////////////////////////////////////////
 
@@ -54,7 +56,7 @@ void DebugView_Init()
 {
 }
 
-void CreateDebugView(HWND hwndParent, int x, int y, int width, int height)
+void DebugView_Create(HWND hwndParent, int x, int y, int width, int height)
 {
     ASSERT(hwndParent != NULL);
 
@@ -149,7 +151,7 @@ LRESULT CALLBACK DebugViewViewerWndProc(HWND hWnd, UINT message, WPARAM wParam, 
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
 
-            DebugView_DoDraw(hdc);  // Draw memory dump
+            DebugView_DoDraw(hdc);
 
             EndPaint(hWnd, &ps);
         }
@@ -200,6 +202,7 @@ void DebugView_OnUpdate()
 // Draw functions
 
 void DebugView_DrawProcessor(HDC hdc, int x, int y);
+void DebugView_DrawMemoryForSP(HDC hdc, int x, int y);
 
 void DebugView_DoDraw(HDC hdc)
 {
@@ -212,6 +215,7 @@ void DebugView_DoDraw(HDC hdc)
 
     DebugView_DrawProcessor(hdc, 30 + cxChar * 2, 2 + 1 * cyLine);
 
+    DebugView_DrawMemoryForSP(hdc, 30 + cxChar * 30, 2 + 0 * cyLine);
 }
 
 void DebugView_DrawRectangle(HDC hdc, int x1, int y1, int x2, int y2)
@@ -270,6 +274,51 @@ void DebugView_DrawProcessor(HDC hdc, int x, int y)
     TextOut(hdc, x, y + 5 * cyLine, _T("PC"), 2);
     DrawHexValue(hdc, x + cxChar * 3, y + 5 * cyLine, wvalue);
     DrawBinaryValue(hdc, x + cxChar * 8, y + 5 * cyLine, wvalue);
+}
+
+void DebugView_DrawMemoryForSP(HDC hdc, int x, int y)
+{
+    int cxChar, cyLine;  GetFontWidthAndHeight(hdc, &cxChar, &cyLine);
+    COLORREF colorText = GetSysColor(COLOR_WINDOWTEXT);
+    COLORREF colorOld = SetTextColor(hdc, colorText);
+
+    WORD current = i8080_regs_sp();
+
+    // Читаем из памяти процессора в буфер
+    WORD memory[16];
+    for (int idx = 0; idx < 32; idx++)
+    {
+        BYTE lo = Emulator_GetMemoryByte(current + idx * 2 - 12);
+        BYTE hi = Emulator_GetMemoryByte(current + idx * 2 - 12 + 1);
+        memory[idx] = MAKEWORD(lo, hi);
+    }
+
+    WORD address = current - 12;
+    for (int index = 0; index < 12; index++)    // Рисуем строки
+    {
+        // Адрес
+        SetTextColor(hdc, colorText);
+        DrawHexValue(hdc, x + 4 * cxChar, y, address);
+
+        // Значение по адресу
+        WORD value = memory[index];
+        //WORD wChanged = Emulator_GetChangeRamStatus(address);
+        //SetTextColor(hdc, (wChanged != 0) ? RGB(255, 0, 0) : colorText);
+        DrawHexValue(hdc, x + 10 * cxChar, y, value);
+
+        // Текущая позиция
+        if (address == current)
+        {
+            SetTextColor(hdc, colorText);
+            TextOut(hdc, x + 0 * cxChar, y, _T("SP>>"), 4);
+            //if (current != previous) SetTextColor(hdc, COLOR_RED);
+        }
+
+        address += 2;
+        y += cyLine;
+    }
+
+    SetTextColor(hdc, colorOld);
 }
 
 //////////////////////////////////////////////////////////////////////

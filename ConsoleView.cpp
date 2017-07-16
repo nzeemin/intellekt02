@@ -11,6 +11,7 @@
 
 //////////////////////////////////////////////////////////////////////
 
+COLORREF COLOR_COMMANDFOCUS = RGB(255, 242, 157);
 
 HWND g_hwndConsole = (HWND) INVALID_HANDLE_VALUE;  // Console View window handle
 WNDPROC m_wndprocConsoleToolWindow = NULL;  // Old window proc address of the ToolWindow
@@ -20,6 +21,7 @@ HWND m_hwndConsoleEdit = (HWND) INVALID_HANDLE_VALUE;  // Console line - edit co
 HWND m_hwndConsolePrompt = (HWND) INVALID_HANDLE_VALUE;  // Console prompt - static control
 HFONT m_hfontConsole = NULL;
 WNDPROC m_wndprocConsoleEdit = NULL;  // Old window proc address of the console prompt
+HBRUSH m_hbrConsoleFocused = NULL;
 
 void ClearConsole();
 void PrintConsolePrompt();
@@ -59,7 +61,7 @@ void ConsoleView_RegisterClass()
 }
 
 // Create Console View as child of Main Window
-void CreateConsoleView(HWND hwndParent, int x, int y, int width, int height)
+void ConsoleView_Create(HWND hwndParent, int x, int y, int width, int height)
 {
     ASSERT(hwndParent != NULL);
 
@@ -143,6 +145,15 @@ LRESULT CALLBACK ConsoleViewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
             return CallWindowProc(m_wndprocConsoleToolWindow, hWnd, message, wParam, lParam);
         SetBkColor((HDC)wParam, ::GetSysColor(COLOR_WINDOW));
         return (LRESULT) ::GetSysColorBrush(COLOR_WINDOW);
+    case WM_CTLCOLOREDIT:
+        if (((HWND)lParam) == m_hwndConsoleEdit && ::GetFocus() == m_hwndConsoleEdit)
+        {
+            if (m_hbrConsoleFocused == NULL)
+                m_hbrConsoleFocused = ::CreateSolidBrush(COLOR_COMMANDFOCUS);
+            SetBkColor((HDC)wParam, COLOR_COMMANDFOCUS);
+            return (LRESULT)m_hbrConsoleFocused;
+        }
+        return CallWindowProc(m_wndprocConsoleToolWindow, hWnd, message, wParam, lParam);
     case WM_SIZE:
         lResult = CallWindowProc(m_wndprocConsoleToolWindow, hWnd, message, wParam, lParam);
         ConsoleView_AdjustWindowLayout();
@@ -163,11 +174,15 @@ LRESULT CALLBACK ConsoleEditWndProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
             DoConsoleCommand();
             return 0;
         }
-        else
-            return CallWindowProc(m_wndprocConsoleEdit, hWnd, message, wParam, lParam);
-    default:
-        return CallWindowProc(m_wndprocConsoleEdit, hWnd, message, wParam, lParam);
+        if (wParam == VK_ESCAPE)
+        {
+            SetFocus(g_hwndScreen);
+            return 0;
+        }
+        break;
     }
+
+    return CallWindowProc(m_wndprocConsoleEdit, hWnd, message, wParam, lParam);
 }
 
 void ConsoleView_Activate()
