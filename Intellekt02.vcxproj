@@ -122,6 +122,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Dialogs.h" />
     <ClInclude Include="Emulator.h" />
     <ClInclude Include="i8080.h" />
     <ClInclude Include="i8080dis.h" />
@@ -137,6 +138,7 @@
   <ItemGroup>
     <ClCompile Include="ConsoleView.cpp" />
     <ClCompile Include="DebugView.cpp" />
+    <ClCompile Include="Dialogs.cpp" />
     <ClCompile Include="DisasmView.cpp" />
     <ClCompile Include="Emulator.cpp" />
     <ClCompile Include="i8080.cpp" />

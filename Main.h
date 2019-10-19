@@ -100,6 +100,8 @@ void Settings_SetConfiguration(int configuration);
 int  Settings_GetConfiguration();
 void Settings_SetDebug(BOOL flag);
 BOOL Settings_GetDebug();
+void Settings_GetDebugFontName(LPTSTR buffer);
+void Settings_SetDebugFontName(LPCTSTR sFontName);
 void Settings_SetSound(BOOL flag);
 BOOL Settings_GetSound();
 void Settings_SetSoundVolume(WORD value);

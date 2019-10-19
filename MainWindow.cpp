@@ -8,6 +8,7 @@
 
 #include "Main.h"
 #include "Emulator.h"
+#include "Dialogs.h"
 #include "Views.h"
 #include "ToolWindow.h"
 
@@ -45,6 +46,7 @@ void MainWindow_DoEmulatorReset();
 void MainWindow_DoEmulatorSound();
 void MainWindow_DoFileScreenshot();
 void MainWindow_DoEmulatorConf(WORD configuration);
+void MainWindow_DoFileSettings();
 
 
 //////////////////////////////////////////////////////////////////////
@@ -515,7 +517,7 @@ bool MainWindow_DoCommand(int commandId)
     switch (commandId)
     {
     case IDM_ABOUT:
-        MainWindow_DoHelpAbout();
+        ShowAboutBox();
         break;
     case IDM_EXIT:
         DestroyWindow(g_hwnd);
@@ -552,17 +554,13 @@ bool MainWindow_DoCommand(int commandId)
     case ID_CONF_CHESS2:
         MainWindow_DoEmulatorConf(EMU_CONF_CHESS2);
         break;
+    case ID_FILE_SETTINGS:
+        MainWindow_DoFileSettings();
+        break;
     default:
         return false;
     }
     return true;
-}
-
-void MainWindow_DoHelpAbout()
-{
-    ::MessageBox(g_hwnd,
-            _T("INTELLEKT-02\n\nEmulator of soviet chess computer\nby Nikita Zimin, 2016\n\nhttps://github.com/nzeemin/intellekt02"),
-            g_szTitle, MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
 }
 
 void MainWindow_DoViewDebug()
@@ -609,7 +607,7 @@ void MainWindow_DoEmulatorSound()
 
 void MainWindow_DoFileSettings()
 {
-    //ShowSettingsDialog();
+    ShowSettingsDialog();
 }
 
 void MainWindow_DoEmulatorConf(WORD configuration)

@@ -1,12 +1,3 @@
-/*  This file is part of BKBTL.
-    BKBTL is free software: you can redistribute it and/or modify it under the terms
-of the GNU Lesser General Public License as published by the Free Software Foundation,
-either version 3 of the License, or (at your option) any later version.
-    BKBTL is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-    You should have received a copy of the GNU Lesser General Public License along with
-BKBTL. If not, see <http://www.gnu.org/licenses/>. */
 
 // Settings.cpp
 
@@ -192,16 +183,7 @@ SETTINGS_GETSET_DWORD(WindowMaximized, _T("WindowMaximized"), BOOL, FALSE);
 
 SETTINGS_GETSET_DWORD(WindowFullscreen, _T("WindowFullscreen"), BOOL, FALSE);
 
-void Settings_SetConfiguration(int configuration)
-{
-    Settings_SaveDwordValue(_T("Configuration"), (DWORD) configuration);
-}
-int Settings_GetConfiguration()
-{
-    DWORD dwValue = 0;
-    Settings_LoadDwordValue(_T("Configuration"), &dwValue);
-    return (int) dwValue;
-}
+SETTINGS_GETSET_DWORD(Configuration, _T("Configuration"), int, 0);
 
 void Settings_GetCartridgeFilePath(int slot, LPTSTR buffer)
 {
@@ -219,6 +201,18 @@ void Settings_SetCartridgeFilePath(int slot, LPCTSTR sFilePath)
 SETTINGS_GETSET_DWORD(Toolbar, _T("Toolbar"), BOOL, TRUE);
 
 SETTINGS_GETSET_DWORD(Debug, _T("Debug"), BOOL, FALSE);
+
+void Settings_GetDebugFontName(LPTSTR buffer)
+{
+    if (!Settings_LoadStringValue(_T("DebugFontName"), buffer, 32))
+    {
+        _tcscpy(buffer, _T("Lucida Console"));
+    }
+}
+void Settings_SetDebugFontName(LPCTSTR sFontName)
+{
+    Settings_SaveStringValue(_T("DebugFontName"), sFontName);
+}
 
 SETTINGS_GETSET_DWORD(Autostart, _T("Autostart"), BOOL, FALSE);
 
