@@ -37,9 +37,9 @@ int APIENTRY _tWinMain(
     UNREFERENCED_PARAMETER(lpCmdLine);
 
 #ifdef _DEBUG
-    //_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF);
-    //int n = 0;
-    //_CrtSetBreakAlloc(n);
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF);
+    int n = 0;
+    _CrtSetBreakAlloc(n);
 #endif
 
     g_hInst = hInstance; // Store instance handle in our global variable
@@ -115,8 +115,8 @@ endprog:
     DoneInstance();
 
 #ifdef _DEBUG
-    //if (_CrtDumpMemoryLeaks())
-    //    ::MessageBeep(MB_ICONEXCLAMATION);
+    if (_CrtDumpMemoryLeaks())
+        ::MessageBeep(MB_ICONEXCLAMATION);
 #endif
 
     return (int) msg.wParam;

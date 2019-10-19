@@ -279,14 +279,14 @@ void i8080_hal_io_output(int port, int value)
     switch (port)
     {
     case 0xf6:
-        {
-            g_wEmulatorPortF6 = value;
-            if (value != 0)
-                KeyboardView_SetIndicatorData(value, g_wEmulatorPortF5);
-            break;
-        }
+        if (g_wEmulatorPortF6 == 0 && value != 0)
+            KeyboardView_SetIndicatorData(value, g_wEmulatorPortF5);
+        g_wEmulatorPortF6 = value;
+        break;
     case 0xf5:
         g_wEmulatorPortF5 = value;
+        if (g_wEmulatorPortF6 != 0)
+            KeyboardView_SetIndicatorData(g_wEmulatorPortF6, g_wEmulatorPortF5);
         break;
     default:
         break;

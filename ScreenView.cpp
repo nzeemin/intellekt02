@@ -160,12 +160,6 @@ void ScreenView_OnDraw(HDC hdc)
 
     HBRUSH hbrWhite = ::CreateSolidBrush(COLOR_BOARD_WHITE);
     HBRUSH hbrBlack = ::CreateSolidBrush(COLOR_BOARD_BLACK);
-    HFONT hfont = CreateDialogFont();
-    HGDIOBJ hOldFont = ::SelectObject(hdc, hfont);
-    ::SetBkMode(hdc, TRANSPARENT);
-    ::SetTextColor(hdc, COLOR_BOARD_TEXT);
-    TCHAR buffer[5];
-    RECT rcText;
     for (int yy = 0; yy < 8; yy++)
     {
         int celly = boardy + (7 - yy) * 40;
@@ -176,9 +170,8 @@ void ScreenView_OnDraw(HDC hdc)
 
             // Board cell background
             HBRUSH hbr = ((xx ^ yy) & 1) ? hbrWhite : hbrBlack;
-            HGDIOBJ hbrOld = ::SelectObject(hdc, hbr);
+            ::SelectObject(hdc, hbr);
             PatBlt(hdc, cellx, celly, 40, 40, PATCOPY);
-            ::SelectObject(hdc, hbrOld);
 
             int index = yy * 8 + xx;
             int figure = m_arrScreen_BoardData[index];
@@ -192,8 +185,24 @@ void ScreenView_OnDraw(HDC hdc)
                 //::DrawText(hdc, buffer + 2, 2, &rcText, DT_NOPREFIX | DT_SINGLELINE | DT_LEFT | DT_BOTTOM);
             }
         }
+    }
+    ::SelectObject(hdc, hOldBrush);
+    ::DeleteObject(hbrWhite);
+    ::DeleteObject(hbrBlack);
 
-        // Row numbers
+    ::SelectObject(hdcMem, hOldBitmap);
+    ::DeleteDC(hdcMem);
+    ::DeleteObject(hBmpPieces);
+
+    HFONT hfont = CreateDialogFont();
+    HGDIOBJ hOldFont = ::SelectObject(hdc, hfont);
+    ::SetBkMode(hdc, TRANSPARENT);
+    ::SetTextColor(hdc, COLOR_BOARD_TEXT);
+    RECT rcText;
+    TCHAR buffer[5];
+    // Row numbers
+    for (int yy = 0; yy < 8; yy++)
+    {
         buffer[0] = _T('1') + yy;
         buffer[1] = 0;
         rcText.top = boardy + (7 - yy) * 40;
@@ -219,15 +228,8 @@ void ScreenView_OnDraw(HDC hdc)
         rcText.bottom = rcText.top + 40;
         ::DrawText(hdc, buffer, 1, &rcText, DT_NOPREFIX | DT_SINGLELINE | DT_CENTER | DT_TOP);
     }
-
     ::SelectObject(hdc, hOldFont);
     ::DeleteObject(hfont);
-    ::DeleteObject(hbrWhite);
-    ::DeleteObject(hbrBlack);
-
-    ::SelectObject(hdcMem, hOldBitmap);
-    ::DeleteDC(hdcMem);
-    ::DeleteObject(hBmpPieces);
 }
 
 // Зная где лежат данные шахматной доски, отдаем номер фигуры для изображения

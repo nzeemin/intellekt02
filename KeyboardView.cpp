@@ -348,11 +348,13 @@ void KeyboardView_OnDraw(HDC hdc)
         }
     }
     ::SelectObject(hdc, hpenOld);
+    ::DeleteObject(hpenDark);
 
     ::SelectObject(hdc, hOldFont);
     ::DeleteObject(hfont);
     ::DeleteObject(hbrDark);
     ::DeleteObject(hbrRed);
+    ::DeleteObject(hbrGreen);
     ::DeleteObject(hBkBrush);
 }
 
