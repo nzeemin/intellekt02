@@ -8,6 +8,16 @@
 
 //////////////////////////////////////////////////////////////////////
 
+enum EmulatorConfiguration
+{
+    EMU_CONF_CHESS1 = 1,
+    EMU_CONF_CHESS2 = 2,
+};
+
+
+//////////////////////////////////////////////////////////////////////
+
+extern WORD g_nEmulatorConfiguration;  // Current configuration
 
 extern bool g_okEmulatorRunning;
 
@@ -18,6 +28,7 @@ extern WORD g_wEmulatorPrevCpuPC;  // Previous PC value
 
 
 bool Emulator_Init();
+bool Emulator_InitConfiguration(WORD configuration);
 void Emulator_Done();
 WORD Emulator_GetPC();
 BYTE Emulator_GetMemoryByte(WORD address);

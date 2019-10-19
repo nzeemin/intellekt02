@@ -17,20 +17,8 @@ BKBTL. If not, see <http://www.gnu.org/licenses/>. */
 //////////////////////////////////////////////////////////////////////
 
 
-const TCHAR m_Settings_IniAppName[] = _T("BKBTL");
+const TCHAR m_Settings_IniAppName[] = _T("Intellekt02");
 TCHAR m_Settings_IniPath[MAX_PATH];
-
-BOOL m_Settings_Toolbar = TRUE;
-BOOL m_Settings_Debug = FALSE;
-BOOL m_Settings_Debug_Valid = FALSE;
-BOOL m_Settings_RealSpeed = FALSE;
-BOOL m_Settings_RealSpeed_Valid = FALSE;
-BOOL m_Settings_Sound = FALSE;
-BOOL m_Settings_Sound_Valid = FALSE;
-WORD m_Settings_SoundVolume = 0x7fff;
-BOOL m_Settings_SoundVolume_Valid = FALSE;
-BOOL m_Settings_Keyboard = TRUE;
-BOOL m_Settings_Keyboard_Valid = FALSE;
 
 
 //////////////////////////////////////////////////////////////////////
@@ -88,7 +76,9 @@ BOOL Settings_LoadDwordValue(LPCTSTR sName, DWORD* dwValue)
 
 BOOL Settings_SaveBinaryValue(LPCTSTR sName, const void * pData, int size)
 {
-    TCHAR* buffer = (TCHAR*) ::malloc((size * 2 + 1) * sizeof(TCHAR));
+    TCHAR* buffer = (TCHAR*) ::calloc(size * 2 + 1, sizeof(TCHAR));
+    if (buffer == NULL)
+        return FALSE;
     const BYTE* p = (const BYTE*) pData;
     TCHAR* buf = buffer;
     for (int i = 0; i < size; i++)
@@ -108,8 +98,10 @@ BOOL Settings_SaveBinaryValue(LPCTSTR sName, const void * pData, int size)
 
 BOOL Settings_LoadBinaryValue(LPCTSTR sName, void * pData, int size)
 {
-    size_t buffersize = (size * 2 + 1) * sizeof(TCHAR);
-    TCHAR* buffer = (TCHAR*) ::malloc(buffersize);
+    size_t buffersize = size * 2 + 1;
+    TCHAR* buffer = (TCHAR*) ::calloc(buffersize, sizeof(TCHAR));
+    if (buffer == NULL)
+        return FALSE;
     if (!Settings_LoadStringValue(sName, buffer, buffersize))
     {
         free(buffer);
@@ -224,101 +216,16 @@ void Settings_SetCartridgeFilePath(int slot, LPCTSTR sFilePath)
     Settings_SaveStringValue(bufValueName, sFilePath);
 }
 
-void Settings_SetToolbar(BOOL flag)
-{
-    Settings_SaveDwordValue(_T("Toolbar"), (DWORD) flag);
-}
-BOOL Settings_GetToolbar()
-{
-    DWORD dwValue = (DWORD) TRUE;
-    Settings_LoadDwordValue(_T("Toolbar"), &dwValue);
-    return (BOOL) dwValue;
-}
+SETTINGS_GETSET_DWORD(Toolbar, _T("Toolbar"), BOOL, TRUE);
 
-void Settings_SetDebug(BOOL flag)
-{
-    m_Settings_Debug = flag;
-    m_Settings_Debug_Valid = TRUE;
-    Settings_SaveDwordValue(_T("Debug"), (DWORD) flag);
-}
-BOOL Settings_GetDebug()
-{
-    if (!m_Settings_Debug_Valid)
-    {
-        DWORD dwValue = (DWORD) FALSE;
-        Settings_LoadDwordValue(_T("Debug"), &dwValue);
-        m_Settings_Debug = (BOOL) dwValue;
-        m_Settings_Debug_Valid = TRUE;
-    }
-    return m_Settings_Debug;
-}
+SETTINGS_GETSET_DWORD(Debug, _T("Debug"), BOOL, FALSE);
 
-void Settings_SetAutostart(BOOL flag)
-{
-    Settings_SaveDwordValue(_T("Autostart"), (DWORD) flag);
-}
-BOOL Settings_GetAutostart()
-{
-    DWORD dwValue = (DWORD) FALSE;
-    Settings_LoadDwordValue(_T("Autostart"), &dwValue);
-    return (BOOL) dwValue;
-}
+SETTINGS_GETSET_DWORD(Autostart, _T("Autostart"), BOOL, FALSE);
 
-void Settings_SetSound(BOOL flag)
-{
-    m_Settings_Sound = flag;
-    m_Settings_Sound_Valid = TRUE;
-    Settings_SaveDwordValue(_T("Sound"), (DWORD) flag);
-}
-BOOL Settings_GetSound()
-{
-    if (!m_Settings_Sound_Valid)
-    {
-        DWORD dwValue = (DWORD) FALSE;
-        Settings_LoadDwordValue(_T("Sound"), &dwValue);
-        m_Settings_Sound = (BOOL) dwValue;
-        m_Settings_Sound_Valid = TRUE;
-    }
-    return m_Settings_Sound;
-}
+SETTINGS_GETSET_DWORD(Sound, _T("Sound"), BOOL, FALSE);
+SETTINGS_GETSET_DWORD(SoundVolume, _T("SoundVolume"), WORD, 0x7fff);
 
-void Settings_SetSoundVolume(WORD value)
-{
-    m_Settings_SoundVolume = value;
-    m_Settings_SoundVolume_Valid = TRUE;
-    Settings_SaveDwordValue(_T("SoundVolume"), (DWORD) value);
-}
-WORD Settings_GetSoundVolume()
-{
-    if (!m_Settings_SoundVolume_Valid)
-    {
-        DWORD dwValue = (DWORD) 0x7fff;
-        Settings_LoadDwordValue(_T("SoundVolume"), &dwValue);
-        m_Settings_SoundVolume = (WORD)dwValue;
-        m_Settings_SoundVolume_Valid = TRUE;
-    }
-    return m_Settings_SoundVolume;
-}
-
-
-
-void Settings_SetKeyboard(BOOL flag)
-{
-    m_Settings_Keyboard = flag;
-    m_Settings_Keyboard_Valid = TRUE;
-    Settings_SaveDwordValue(_T("Keyboard"), (DWORD) flag);
-}
-BOOL Settings_GetKeyboard()
-{
-    if (!m_Settings_Keyboard_Valid)
-    {
-        DWORD dwValue = (DWORD) TRUE;
-        Settings_LoadDwordValue(_T("Keyboard"), &dwValue);
-        m_Settings_Keyboard = (BOOL) dwValue;
-        m_Settings_Keyboard_Valid = TRUE;
-    }
-    return m_Settings_Keyboard;
-}
+SETTINGS_GETSET_DWORD(Keyboard, _T("Keyboard"), BOOL, TRUE);
 
 
 //////////////////////////////////////////////////////////////////////

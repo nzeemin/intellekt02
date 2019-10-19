@@ -44,6 +44,7 @@ void MainWindow_DoEmulatorRun();
 void MainWindow_DoEmulatorReset();
 void MainWindow_DoEmulatorSound();
 void MainWindow_DoFileScreenshot();
+void MainWindow_DoEmulatorConf(WORD configuration);
 
 
 //////////////////////////////////////////////////////////////////////
@@ -54,17 +55,17 @@ void MainWindow_RegisterClass()
     WNDCLASSEX wcex;
     wcex.cbSize = sizeof(WNDCLASSEX);
 
-    wcex.style			= CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc	= MainWindow_WndProc;
-    wcex.cbClsExtra		= 0;
-    wcex.cbWndExtra		= 0;
-    wcex.hInstance		= g_hInst;
-    wcex.hIcon			= LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_INTELLEKT02));
-    wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
-    wcex.hbrBackground	= (HBRUSH)(COLOR_BTNFACE + 1);
-    wcex.lpszMenuName	= MAKEINTRESOURCE(IDC_INTELLEKT02);
-    wcex.lpszClassName	= g_szWindowClass;
-    wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    wcex.style          = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc    = MainWindow_WndProc;
+    wcex.cbClsExtra     = 0;
+    wcex.cbWndExtra     = 0;
+    wcex.hInstance      = g_hInst;
+    wcex.hIcon          = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_INTELLEKT02));
+    wcex.hCursor        = LoadCursor(NULL, IDC_ARROW);
+    wcex.hbrBackground  = (HBRUSH)(COLOR_BTNFACE + 1);
+    wcex.lpszMenuName   = MAKEINTRESOURCE(IDC_INTELLEKT02);
+    wcex.lpszClassName  = g_szWindowClass;
+    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
     RegisterClassEx(&wcex);
 
@@ -471,7 +472,7 @@ void MainWindow_ShowHideKeyboard()
         RECT rcScreen;  GetWindowRect(g_hwndScreen, &rcScreen);
         int yKeyboardTop = rcScreen.bottom - rcScreen.top + 8;
         int cxKeyboardWidth = rcScreen.right - rcScreen.left;
-        int cyKeyboardHeight = 100;
+        const int cyKeyboardHeight = 100;
 
         if (g_hwndKeyboard == INVALID_HANDLE_VALUE)
             KeyboardView_Create(g_hwnd, 4, yKeyboardTop, cxKeyboardWidth, cyKeyboardHeight);
@@ -497,6 +498,14 @@ void MainWindow_UpdateMenu()
 
     MainWindow_SetToolbarImage(ID_EMULATOR_SOUND, (Settings_GetSound() ? 7 : 8));
     EnableMenuItem(hMenu, ID_DEBUG_STEPINTO, (g_okEmulatorRunning ? MF_DISABLED : MF_ENABLED));
+
+    UINT configcmd = 0;
+    switch (g_nEmulatorConfiguration)
+    {
+    case EMU_CONF_CHESS1: configcmd = ID_CONF_CHESS; break;
+    case EMU_CONF_CHESS2: configcmd = ID_CONF_CHESS2; break;
+    }
+    CheckMenuRadioItem(hMenu, ID_CONF_CHESS, ID_CONF_CHESS2, configcmd, MF_BYCOMMAND);
 }
 
 // Process menu command
@@ -537,6 +546,12 @@ bool MainWindow_DoCommand(int commandId)
     case ID_EMULATOR_SOUND:
         MainWindow_DoEmulatorSound();
         break;
+    case ID_CONF_CHESS:
+        MainWindow_DoEmulatorConf(EMU_CONF_CHESS1);
+        break;
+    case ID_CONF_CHESS2:
+        MainWindow_DoEmulatorConf(EMU_CONF_CHESS2);
+        break;
     default:
         return false;
     }
@@ -546,8 +561,8 @@ bool MainWindow_DoCommand(int commandId)
 void MainWindow_DoHelpAbout()
 {
     ::MessageBox(g_hwnd,
-        _T("INTELLEKT-02\n\nEmulator of soviet chess computer\nby Nikita Zimin, 2016\n\nhttps://github.com/nzeemin/intellekt02"),
-        g_szTitle, MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
+            _T("INTELLEKT-02\n\nEmulator of soviet chess computer\nby Nikita Zimin, 2016\n\nhttps://github.com/nzeemin/intellekt02"),
+            g_szTitle, MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
 }
 
 void MainWindow_DoViewDebug()
@@ -596,6 +611,26 @@ void MainWindow_DoFileSettings()
 {
     //ShowSettingsDialog();
 }
+
+void MainWindow_DoEmulatorConf(WORD configuration)
+{
+    // Check if configuration changed
+    if (g_nEmulatorConfiguration == configuration)
+        return;
+
+    // Ask user -- we have to reset machine to change configuration
+    if (!AlertOkCancel(_T("Reset required after configuration change.\nAre you agree?")))
+        return;
+
+    // Change configuration
+    Emulator_InitConfiguration(configuration);
+
+    Settings_SetConfiguration(configuration);
+
+    MainWindow_UpdateMenu();
+    MainWindow_UpdateAllViews();
+}
+
 void MainWindow_UpdateAllViews()
 {
     // Update cached values in views

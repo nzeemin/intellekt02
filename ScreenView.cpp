@@ -230,15 +230,45 @@ void ScreenView_OnDraw(HDC hdc)
     ::DeleteObject(hBmpPieces);
 }
 
+// Зная где лежат данные шахматной доски, отдаем номер фигуры для изображения
+BYTE GetChessFugure(int row, int col)
+{
+    bool chessconf = (g_nEmulatorConfiguration == EMU_CONF_CHESS1);
+    WORD addr = chessconf ? (0xf000 + row * 8 + col) : (0xf024 + row * 16 + col);
+
+    BYTE figure = Emulator_GetMemoryByte(addr);
+    if (!chessconf)
+    {
+        bool isblack = (figure & 1) != 0;
+        switch (figure & 0x7e)
+        {
+        case 0x02: figure = 0x02; break;  // пешка
+        case 0x0a: figure = 0x08; break;  // ладья
+        case 0x06: figure = 0x04; break;  // конь
+        case 0x08: figure = 0x06; break;  // слон
+        case 0x12: figure = 0x0a; break;  // ферзь
+        case 0x42: figure = 0x0c; break;  // король
+        default: figure = 0;
+        }
+        figure |= isblack ? 0 : 0x80;
+    }
+
+    return figure;
+};
+
 void ScreenView_UpdateScreen()
 {
     bool okChanged = false;
-    for (int index = 0; index < 64; index++)
+    for (int row = 0; row < 8; row++)
     {
-        BYTE oldfigure = m_arrScreen_BoardData[index];
-        BYTE figure = Emulator_GetMemoryByte(0xf000 + index);
-        okChanged |= (oldfigure != figure);
-        m_arrScreen_BoardData[index] = figure;
+        for (int col = 0; col < 8; col++)
+        {
+            WORD index = row * 8 + col;
+            BYTE oldfigure = m_arrScreen_BoardData[index];
+            BYTE figure = GetChessFugure(row, col);
+            okChanged |= (oldfigure != figure);
+            m_arrScreen_BoardData[index] = figure;
+        }
     }
 
     if (okChanged)

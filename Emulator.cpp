@@ -14,6 +14,7 @@ void Emulator_TraceInstruction(WORD address);
 
 //////////////////////////////////////////////////////////////////////
 
+WORD g_nEmulatorConfiguration;  // Current configuration
 
 bool g_okEmulatorRunning = false;
 
@@ -35,19 +36,6 @@ bool Emulator_Init()
     g_pEmulatorRam = (BYTE*) ::malloc(65536);
     ::memset(g_pEmulatorRam, 0, 65536);
 
-    HRSRC hRes = NULL;
-    DWORD dwDataSize = 0;
-    HGLOBAL hResLoaded = NULL;
-    void * pResData = NULL;
-    if ((hRes = ::FindResource(NULL, MAKEINTRESOURCE(IDR_CHESS_ROM), _T("BIN"))) == NULL ||
-        (dwDataSize = ::SizeofResource(NULL, hRes)) < 8192 ||
-        (hResLoaded = ::LoadResource(NULL, hRes)) == NULL ||
-        (pResData = ::LockResource(hResLoaded)) == NULL)
-    {
-        return false;
-    }
-    ::memcpy(g_pEmulatorRam, pResData, 8192);
-
     i8080_init();
     i8080_jump(0);
 
@@ -62,6 +50,42 @@ bool Emulator_Init()
 void Emulator_Done()
 {
     ::free(g_pEmulatorRam);  g_pEmulatorRam = NULL;
+}
+
+bool Emulator_InitConfiguration(WORD configuration)
+{
+    WORD nRomResourceId;
+    switch (configuration)
+    {
+    default:
+    case EMU_CONF_CHESS1:
+        nRomResourceId = IDR_CHESS_ROM;
+        break;
+    case EMU_CONF_CHESS2:
+        nRomResourceId = IDR_CHESS2_ROM;
+        break;
+    }
+
+    HRSRC hRes = NULL;
+    DWORD dwDataSize = 0;
+    HGLOBAL hResLoaded = NULL;
+    void * pResData = NULL;
+    if ((hRes = ::FindResource(NULL, MAKEINTRESOURCE(nRomResourceId), _T("BIN"))) == NULL ||
+        (dwDataSize = ::SizeofResource(NULL, hRes)) < 8192 ||
+        (hResLoaded = ::LoadResource(NULL, hRes)) == NULL ||
+        (pResData = ::LockResource(hResLoaded)) == NULL)
+    {
+        return false;
+    }
+    ::memcpy(g_pEmulatorRam, pResData, 8192);
+
+    g_nEmulatorConfiguration = configuration;
+
+    // Reset the CPU
+    i8080_init();
+    i8080_jump(0);
+
+    return true;
 }
 
 void Emulator_Start()

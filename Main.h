@@ -32,6 +32,7 @@ void MainWindow_AdjustWindowSize();
 void MainWindow_SetToolbarImage(int commandId, int imageIndex);
 void MainWindow_SetStatusbarText(int part, LPCTSTR message);
 
+
 //////////////////////////////////////////////////////////////////////
 // Assertions checking - MFC-like ASSERT macro
 
@@ -47,6 +48,14 @@ BOOL AssertFailedLine(LPCSTR lpszFileName, int nLine);
 #define VERIFY(f)          ((void)f)
 
 #endif // !_DEBUG
+
+
+//////////////////////////////////////////////////////////////////////
+// Alerts
+
+void AlertWarning(LPCTSTR sMessage);
+void AlertWarningFormat(LPCTSTR sFormat, ...);
+BOOL AlertOkCancel(LPCTSTR sMessage);
 
 
 //////////////////////////////////////////////////////////////////////
@@ -87,6 +96,8 @@ BOOL Settings_GetWindowRect(RECT * pRect);
 void Settings_SetWindowRect(const RECT * pRect);
 void Settings_SetWindowMaximized(BOOL flag);
 BOOL Settings_GetWindowMaximized();
+void Settings_SetConfiguration(int configuration);
+int  Settings_GetConfiguration();
 void Settings_SetDebug(BOOL flag);
 BOOL Settings_GetDebug();
 void Settings_SetSound(BOOL flag);

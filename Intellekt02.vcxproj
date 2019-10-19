@@ -166,6 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Chess.bin" />
+    <None Include="res\Chess2.bin" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -144,6 +144,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     Settings_Init();
     if (!Emulator_Init())
         return FALSE;
+    WORD conf = (WORD) Settings_GetConfiguration();
+    if (conf == 0) conf = EMU_CONF_CHESS1;
+    if (!Emulator_InitConfiguration(conf))
+        return FALSE;
 
     Emulator_SetSound(Settings_GetSound() != FALSE);
 
