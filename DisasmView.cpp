@@ -251,7 +251,6 @@ int DisasmView_DrawDisassemble(HDC hdc, WORD base, WORD previous, int x, int y)
     WORD wNextBaseAddr = 0;
     for (int index = 0; index < nWindowSize; )  // Рисуем строки
     {
-
         DrawHexValue(hdc, x + 5 * cxChar, y, address);  // Address
 
         // Current position

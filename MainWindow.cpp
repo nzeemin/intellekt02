@@ -36,6 +36,7 @@ void MainWindow_RestorePositionAndShow();
 LRESULT CALLBACK MainWindow_WndProc(HWND, UINT, WPARAM, LPARAM);
 void MainWindow_AdjustWindowLayout();
 bool MainWindow_DoCommand(int commandId);
+void MainWindow_DoHelpAbout();
 void MainWindow_DoViewDebug();
 void MainWindow_DoViewToolbar();
 void MainWindow_DoViewKeyboard();
@@ -326,7 +327,6 @@ void MainWindow_AdjustWindowLayout()
     if (!Settings_GetDebug())  // No debug views
     {
         cxScreen = rc.right;
-
     }
 
     RECT rcScreen;  GetWindowRect(g_hwndScreen, &rcScreen);
@@ -506,9 +506,7 @@ bool MainWindow_DoCommand(int commandId)
     switch (commandId)
     {
     case IDM_ABOUT:
-        ::MessageBox(g_hwnd,
-                _T("INTELLEKT-02\n\nEmulator of soviet chess computer\nby Nikita Zimin, 2016\n\nhttps://github.com/nzeemin/intellekt02"),
-                g_szTitle, MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
+        MainWindow_DoHelpAbout();
         break;
     case IDM_EXIT:
         DestroyWindow(g_hwnd);
@@ -543,6 +541,13 @@ bool MainWindow_DoCommand(int commandId)
         return false;
     }
     return true;
+}
+
+void MainWindow_DoHelpAbout()
+{
+    ::MessageBox(g_hwnd,
+        _T("INTELLEKT-02\n\nEmulator of soviet chess computer\nby Nikita Zimin, 2016\n\nhttps://github.com/nzeemin/intellekt02"),
+        g_szTitle, MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
 }
 
 void MainWindow_DoViewDebug()

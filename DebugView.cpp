@@ -286,7 +286,7 @@ void DebugView_DrawMemoryForSP(HDC hdc, int x, int y)
 
     // Читаем из памяти процессора в буфер
     WORD memory[16];
-    for (int idx = 0; idx < 32; idx++)
+    for (int idx = 0; idx < 16; idx++)
     {
         BYTE lo = Emulator_GetMemoryByte(current + idx * 2 - 12);
         BYTE hi = Emulator_GetMemoryByte(current + idx * 2 - 12 + 1);
