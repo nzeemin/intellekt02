@@ -216,6 +216,9 @@ void DebugView_DoDraw(HDC hdc)
     DebugView_DrawProcessor(hdc, 30 + cxChar * 2, 2 + 1 * cyLine);
 
     DebugView_DrawMemoryForSP(hdc, 30 + cxChar * 30, 2 + 0 * cyLine);
+
+    SelectObject(hdc, hOldFont);
+    DeleteObject(hFont);
 }
 
 void DebugView_DrawRectangle(HDC hdc, int x1, int y1, int x2, int y2)

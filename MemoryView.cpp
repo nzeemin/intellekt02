@@ -191,6 +191,9 @@ void MemoryView_OnDraw(HDC hdc)
         if (y > rcClip.bottom) break;
     }
 
+    SelectObject(hdc, hOldFont);
+    DeleteObject(hFont);
+
     if (::GetFocus() == m_hwndMemoryViewer)
     {
         RECT rcFocus = rcClient;
