@@ -1,11 +1,14 @@
 # intellekt02 - emulator of soviet chess computer
 
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 [![CodeFactor](https://www.codefactor.io/repository/github/nzeemin/intellekt02/badge)](https://www.codefactor.io/repository/github/nzeemin/intellekt02)
 
 ![](screenshot/Intellekt-02_running.png)
 
 "ИНТЕЛЛЕКТ-02" is a small Soviet computer with chessboard-like case and games on cartridges.
 Currently two ROM images restored, both for the Chess game, both supported in the emulator.
+
+![](screenshot/Intellect-02-RadioMagazine.jpg)
 
 ## Links
 
