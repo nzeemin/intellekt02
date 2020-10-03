@@ -6,8 +6,8 @@
 #include "Views.h"
 #include "Emulator.h"
 
-
 //////////////////////////////////////////////////////////////////////
+
 
 #define COLOR_BK_BACKGROUND   RGB(115,115,115)
 #define COLOR_KEYBOARD_LITE   RGB(228,228,228)
@@ -376,5 +376,6 @@ int KeyboardView_GetKeyByPoint(int x, int y)
     }
     return -1;
 }
+
 
 //////////////////////////////////////////////////////////////////////

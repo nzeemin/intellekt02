@@ -1,6 +1,5 @@
 
 // MainWindow.cpp
-//
 
 #include "stdafx.h"
 #include <commdlg.h>
@@ -22,7 +21,6 @@ TCHAR g_szWindowClass[MAX_LOADSTRING];      // Main window class name
 HWND m_hwndToolbar = NULL;
 HWND m_hwndStatusbar = NULL;
 HWND m_hwndSplitter = (HWND)INVALID_HANDLE_VALUE;
-
 
 
 BOOL m_MainWindow_Fullscreen = FALSE;
@@ -80,6 +78,7 @@ void MainWindow_RegisterClass()
     KeyboardView_RegisterClass();
     MemoryView_RegisterClass();
     DebugView_RegisterClass();
+    //MemoryMapView_RegisterClass();
     DisasmView_RegisterClass();
     ConsoleView_RegisterClass();
 }
@@ -102,6 +101,7 @@ BOOL CreateMainWindow()
         return FALSE;
 
     DebugView_Init();
+    //DisasmView_Init();
     ScreenView_Init();
     KeyboardView_Init();
 
@@ -222,20 +222,25 @@ void MainWindow_RestorePositionAndShow()
     //    MainWindow_DoViewFullscreen();
 }
 
+void MainWindow_UpdateWindowTitle()
+{
+    LPCTSTR emustate = g_okEmulatorRunning ? _T("run") : _T("stop");
+    TCHAR buffer[100];
+    wsprintf(buffer, _T("%s [%s]"), g_szTitle, emustate);
+    SetWindowText(g_hwnd, buffer);
+}
+
 // Processes messages for the main window
 LRESULT CALLBACK MainWindow_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
     case WM_ACTIVATE:
-        if (Settings_GetDebug())
-            ConsoleView_Activate();
-        else
-            SetFocus(g_hwndScreen);
+        SetFocus(g_hwndScreen);
         break;
     case WM_COMMAND:
         {
-            int wmId    = LOWORD(wParam);
+            int wmId = LOWORD(wParam);
             //int wmEvent = HIWORD(wParam);
             bool okProcessed = MainWindow_DoCommand(wmId);
             if (!okProcessed)
@@ -244,7 +249,6 @@ LRESULT CALLBACK MainWindow_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
         break;
     case WM_DESTROY:
         MainWindow_SavePosition();
-        //ScreenView_DoneRender();
         PostQuitMessage(0);
         break;
     case WM_SIZE:
@@ -408,9 +412,6 @@ void MainWindow_ShowHideDebug()
             DestroyWindow(g_hwndMemory);
 
         MainWindow_AdjustWindowSize();
-        MainWindow_AdjustWindowLayout();
-
-        SetFocus(g_hwndScreen);
     }
     else  // Debug Views ON
     {
@@ -441,11 +442,13 @@ void MainWindow_ShowHideDebug()
             DisasmView_Create(g_hwnd, xDebugLeft, yDisasmTop, cxDebugWidth, cyDisasmHeight);
         if (g_hwndMemory == INVALID_HANDLE_VALUE)
             MemoryView_Create(g_hwnd, xDebugLeft, yMemoryTop, cxDebugWidth, cyMemoryHeight);
-
-        MainWindow_AdjustWindowLayout();
     }
 
+    MainWindow_AdjustWindowLayout();
+
     MainWindow_UpdateMenu();
+
+    SetFocus(g_hwndScreen);
 }
 
 void MainWindow_ShowHideToolbar()

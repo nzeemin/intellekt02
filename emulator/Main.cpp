@@ -1,5 +1,4 @@
 // Intellekt02.cpp : Defines the entry point for the application.
-//
 
 #include "stdafx.h"
 #include <commdlg.h>
@@ -445,5 +444,6 @@ bool ParseHexValue(LPCTSTR text, WORD* pValue)
     *pValue = value;
     return true;
 }
+
 
 //////////////////////////////////////////////////////////////////////

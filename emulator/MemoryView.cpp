@@ -8,7 +8,6 @@
 #include "ToolWindow.h"
 #include "Emulator.h"
 
-
 //////////////////////////////////////////////////////////////////////
 
 
@@ -339,5 +338,6 @@ void MemoryView_UpdateScrollPos()
     si.nMax = 0x10000 / 16 - 1;
     SetScrollInfo(m_hwndMemoryViewer, SB_VERT, &si, TRUE);
 }
+
 
 //////////////////////////////////////////////////////////////////////

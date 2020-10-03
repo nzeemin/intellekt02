@@ -8,8 +8,8 @@
 #include "Emulator.h"
 #include "i8080dis.h"
 
-
 //////////////////////////////////////////////////////////////////////
+
 
 COLORREF COLOR_COMMANDFOCUS = RGB(255, 242, 157);
 
@@ -176,7 +176,12 @@ LRESULT CALLBACK ConsoleEditWndProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
         }
         if (wParam == VK_ESCAPE)
         {
-            SetFocus(g_hwndScreen);
+            TCHAR command[32];
+            GetWindowText(m_hwndConsoleEdit, command, 32);
+            if (*command == 0)  // If command is empty
+                SetFocus(g_hwndScreen);
+            else
+                SendMessage(m_hwndConsoleEdit, WM_SETTEXT, 0, (LPARAM)_T(""));  // Clear command
             return 0;
         }
         break;

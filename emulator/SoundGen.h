@@ -1,8 +1,10 @@
 
 // SoundGen.h
-//
 
 #pragma once
+
+//////////////////////////////////////////////////////////////////////
+
 
 #define SOUNDSAMPLERATE  22050
 
@@ -14,3 +16,6 @@ void SoundGen_Initialize(WORD volume);
 void SoundGen_Finalize();
 void SoundGen_SetVolume(WORD volume);
 void CALLBACK SoundGen_FeedDAC(unsigned short L, unsigned short R);
+
+
+//////////////////////////////////////////////////////////////////////

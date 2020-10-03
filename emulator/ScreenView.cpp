@@ -6,8 +6,8 @@
 #include "Views.h"
 #include "Emulator.h"
 
-
 //////////////////////////////////////////////////////////////////////
+
 
 #define COLOR_BK_BACKGROUND RGB(140,140,140)
 #define COLOR_BOARD_WHITE RGB(240,240,240)
@@ -280,5 +280,6 @@ void ScreenView_UpdateScreen()
         ::ReleaseDC(g_hwndScreen, hdc);
     }
 }
+
 
 //////////////////////////////////////////////////////////////////////

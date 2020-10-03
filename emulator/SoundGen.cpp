@@ -1,13 +1,12 @@
 
 // SoundGen.cpp
-//
 
 #include "StdAfx.h"
 #include "SoundGen.h"
 #include "Mmsystem.h"
 
-
 //////////////////////////////////////////////////////////////////////
+
 
 static void CALLBACK waveOutProc(HWAVEOUT, UINT, DWORD, DWORD, DWORD);
 

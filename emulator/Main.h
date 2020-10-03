@@ -10,7 +10,6 @@
 extern TCHAR g_szTitle[MAX_LOADSTRING];            // The title bar text
 extern TCHAR g_szWindowClass[MAX_LOADSTRING];      // Main window class name
 
-
 extern HINSTANCE g_hInst; // current instance
 
 
@@ -23,6 +22,7 @@ void MainWindow_RegisterClass();
 BOOL CreateMainWindow();
 void MainWindow_RestoreSettings();
 void MainWindow_UpdateMenu();
+void MainWindow_UpdateWindowTitle();
 void MainWindow_UpdateAllViews();
 void MainWindow_ShowHideDebug();
 void MainWindow_ShowHideToolbar();

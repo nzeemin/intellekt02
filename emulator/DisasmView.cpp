@@ -9,8 +9,8 @@
 #include "Emulator.h"
 #include "i8080dis.h"
 
-
 //////////////////////////////////////////////////////////////////////
+
 
 // Colors
 #define COLOR_RED       RGB(255,0,0)

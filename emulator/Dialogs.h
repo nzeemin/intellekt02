@@ -16,4 +16,5 @@ BOOL ShowOpenDialog(HWND hwndOwner, LPCTSTR strTitle, LPCTSTR strFilter, TCHAR* 
 
 void ShowSettingsDialog();
 
+
 //////////////////////////////////////////////////////////////////////

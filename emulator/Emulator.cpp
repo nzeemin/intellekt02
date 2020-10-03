@@ -33,8 +33,7 @@ WORD g_wEmulatorPrevCpuPC = 0;  // Previous PC value
 
 bool Emulator_Init()
 {
-    g_pEmulatorRam = (BYTE*) ::malloc(65536);
-    ::memset(g_pEmulatorRam, 0, 65536);
+    g_pEmulatorRam = (BYTE*) ::calloc(65536, 1);
 
     i8080_init();
     i8080_jump(0);
@@ -93,7 +92,7 @@ void Emulator_Start()
     g_okEmulatorRunning = true;
 
     // Set title bar text
-    SetWindowText(g_hwnd, _T("INTELLEKT-02 [run]"));
+    MainWindow_UpdateWindowTitle();
     MainWindow_UpdateMenu();
 }
 void Emulator_Stop()
@@ -101,7 +100,7 @@ void Emulator_Stop()
     g_okEmulatorRunning = false;
 
     // Reset title bar message
-    SetWindowText(g_hwnd, _T("INTELLEKT-02 [stop]"));
+    MainWindow_UpdateWindowTitle();
     MainWindow_UpdateMenu();
     MainWindow_UpdateAllViews();
 }
@@ -325,3 +324,6 @@ void Emulator_TraceInstruction(WORD address)
 }
 
 #endif
+
+
+//////////////////////////////////////////////////////////////////////

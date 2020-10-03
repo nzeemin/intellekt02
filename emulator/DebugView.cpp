@@ -9,8 +9,8 @@
 #include "i8080.h"
 #include "Emulator.h"
 
-
 //////////////////////////////////////////////////////////////////////
+
 
 // Colors
 #define COLOR_RED   RGB(255,0,0)
@@ -323,5 +323,6 @@ void DebugView_DrawMemoryForSP(HDC hdc, int x, int y)
 
     SetTextColor(hdc, colorOld);
 }
+
 
 //////////////////////////////////////////////////////////////////////
