@@ -18,6 +18,7 @@
     <ProjectGuid>{E57F86CA-6245-4A10-971E-79EDC53CEC6D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Intellekt02</RootNamespace>
+    <ProjectName>Intellekt02</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
