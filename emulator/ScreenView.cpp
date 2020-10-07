@@ -1,3 +1,12 @@
+/*  This file is part of ITELLEKT02.
+    ITELLEKT02 is free software: you can redistribute it and/or modify it under the terms
+of the GNU Lesser General Public License as published by the Free Software Foundation,
+either version 3 of the License, or (at your option) any later version.
+    ITELLEKT02 is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU Lesser General Public License for more details.
+    You should have received a copy of the GNU Lesser General Public License along with
+ITELLEKT02. If not, see <http://www.gnu.org/licenses/>. */
 
 // ScreenView.cpp
 
@@ -32,17 +41,17 @@ void ScreenView_RegisterClass()
     WNDCLASSEX wcex;
     wcex.cbSize = sizeof(WNDCLASSEX);
 
-    wcex.style			= CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc	= ScreenViewWndProc;
-    wcex.cbClsExtra		= 0;
-    wcex.cbWndExtra		= 0;
-    wcex.hInstance		= g_hInst;
-    wcex.hIcon			= NULL;
-    wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
-    wcex.hbrBackground	= NULL; //(HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName	= NULL;
-    wcex.lpszClassName	= CLASSNAME_SCREENVIEW;
-    wcex.hIconSm		= NULL;
+    wcex.style          = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc    = ScreenViewWndProc;
+    wcex.cbClsExtra     = 0;
+    wcex.cbWndExtra     = 0;
+    wcex.hInstance      = g_hInst;
+    wcex.hIcon          = NULL;
+    wcex.hCursor        = LoadCursor(NULL, IDC_ARROW);
+    wcex.hbrBackground  = NULL; //(HBRUSH)(COLOR_WINDOW+1);
+    wcex.lpszMenuName   = NULL;
+    wcex.lpszClassName  = CLASSNAME_SCREENVIEW;
+    wcex.hIconSm        = NULL;
 
     RegisterClassEx(&wcex);
 }

@@ -1,3 +1,12 @@
+/*  This file is part of ITELLEKT02.
+    ITELLEKT02 is free software: you can redistribute it and/or modify it under the terms
+of the GNU Lesser General Public License as published by the Free Software Foundation,
+either version 3 of the License, or (at your option) any later version.
+    ITELLEKT02 is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU Lesser General Public License for more details.
+    You should have received a copy of the GNU Lesser General Public License along with
+ITELLEKT02. If not, see <http://www.gnu.org/licenses/>. */
 
 // Views.h
 // Defines for all views of the application
@@ -5,14 +14,16 @@
 #pragma once
 
 //////////////////////////////////////////////////////////////////////
+// Window class names
 
+#define CLASSNAMEPREFIX _T("INTELLEKT02")
 
-const LPCTSTR CLASSNAME_SCREENVIEW      = _T("INTELLEKT02SCREEN");
-const LPCTSTR CLASSNAME_KEYBOARDVIEW    = _T("INTELLEKT02KEYBOARD");
-const LPCTSTR CLASSNAME_DEBUGVIEW       = _T("INTELLEKT02DEBUG");
-const LPCTSTR CLASSNAME_DISASMVIEW      = _T("INTELLEKT02DISASM");
-const LPCTSTR CLASSNAME_MEMORYVIEW      = _T("INTELLEKT02MEMORY");
-const LPCTSTR CLASSNAME_CONSOLEVIEW     = _T("INTELLEKT02CONSOLE");
+const LPCTSTR CLASSNAME_SCREENVIEW      = CLASSNAMEPREFIX _T("SCREEN");
+const LPCTSTR CLASSNAME_KEYBOARDVIEW    = CLASSNAMEPREFIX _T("KEYBOARD");
+const LPCTSTR CLASSNAME_DEBUGVIEW       = CLASSNAMEPREFIX _T("DEBUG");
+const LPCTSTR CLASSNAME_DISASMVIEW      = CLASSNAMEPREFIX _T("DISASM");
+const LPCTSTR CLASSNAME_MEMORYVIEW      = CLASSNAMEPREFIX _T("MEMORY");
+const LPCTSTR CLASSNAME_CONSOLEVIEW     = CLASSNAMEPREFIX _T("CONSOLE");
 
 
 //////////////////////////////////////////////////////////////////////
